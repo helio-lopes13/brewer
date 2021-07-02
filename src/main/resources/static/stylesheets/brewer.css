@@ -123,3 +123,49 @@
 .table-estilos-col-codigo {
 	width: 80px;
 }
+
+/* Colunas - Pesquisa de Clientes */
+
+.table-clientes-col-tipo-pessoa {
+	width: 120px;
+	text-align: center;
+}
+
+.table-clientes-col-cpf-cnpj {
+	width: 140px;
+	text-align: right;
+}
+
+.table-clientes-col-telefone {
+	width: 140px;
+	text-align: right;
+}
+
+.table-clientes-col-cidade-estado {
+	width: 140px;
+	text-align: right;
+}
+
+/* Colunas - Pesquisa de Cidades */
+
+.table-cidades-col-estado {
+	width: 120px;
+	text-align: right;
+}
+
+/* Colunas - Pesquisa de Usuários */
+
+.table-usuarios-col-status {
+	width: 30px;
+}
+
+/*
+########################
+# CUSTOMIZAÇÃO DE COMPONENTES
+########################
+*/
+
+.checkbox input[type="checkbox"]:checked + input + label::after {
+	font-family: 'FontAwesome';
+	content: "\f00c";
+}

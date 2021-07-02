@@ -17,6 +17,8 @@
 		th:href="@{/layout/stylesheets/application.css}" />
 	<link rel="stylesheet" type="text/css"
 		th:href="@{/stylesheets/brewer.css}" />
+	<link rel="stylesheet" type="text/css"
+		th:href="@{/stylesheets/vendors/bootstrap-datepicker.standalone.min.css}" />
 	<link rel="shortcut icon"
 		th:href="@{/images/favicon.png}" />
 	
@@ -29,6 +31,9 @@
 	</head>
 	
 	<body>
+		<input name="_csrf" type="hidden" th:value="${_csrf.token}" />
+		<input name="_csrf_header" type="hidden" th:value="${_csrf.headerName}" />
+		
 		<div class="aw-layout-page">
 			<div th:replace="layout/fragments/BarraNavegacao :: navbar"></div>
 			
@@ -43,6 +48,11 @@
 		<script th:src="@{/layout/javascripts/algaworks.min.js}"></script>
 		
 		<script th:src="@{/javascripts/vendors/jquery.maskMoney.min.js}"></script>
+		<script th:src="@{/javascripts/vendors/jquery.mask.min.js}"></script>
+		
+		<script th:src="@{/javascripts/vendors/bootstrap-datepicker.min.js}"></script>
+		<script th:src="@{/javascripts/vendors/bootstrap-datepicker.pt-BR.min.js}"></script>
+		
 		<script th:src="@{/javascripts/brewer.js}"></script>
 		
 		<th:block layout:fragment="javascript-extra"></th:block>
