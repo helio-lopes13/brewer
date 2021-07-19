@@ -20,9 +20,4 @@ public class SegurancaController {
 	public String acessoNegado() {
 		return "403";
 	}
-	
-//	public ModelAndView login() {
-//		ModelAndView mv = new ModelAndView("Login");
-//		return mv;
-//	}
 }

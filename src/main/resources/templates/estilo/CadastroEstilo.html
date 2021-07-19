@@ -3,6 +3,7 @@
 	xmlns:th="http://www.thymeleaf.org"
 	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 	xmlns:brewer="http://brewer.algaworks.com"
+	xmlns:data="http://www.thymeleaf.org/extras/data"
 	layout:decorate="~{layout/LayoutPadrao}">
 	
 	<head>
@@ -15,7 +16,8 @@
 				<div class="container-fluid">
 					<div class="row">
 						<div class="col-xs-10">
-							<h1>Cadastro de estilo</h1>
+							<h1 th:if="${estilo.novo}">Cadastro de estilo</h1>
+							<h1 th:unless="${estilo.novo}">Edição de [[${estilo.nome}]]</h1>
 						</div>
 						
 						<div class="col-xs-2">
@@ -31,8 +33,12 @@
 			
 			<div class="container-fluid">
 
-				<form method="POST" th:object="${estilo}" th:action="@{/estilos/novo}">
+				<form method="POST" th:object="${estilo}"
+					th:action="${estilo.novo} ? @{/estilos/novo} : @{/estilos/{codigo}(codigo=${estilo.codigo})}">
 					<brewer:message/>
+					
+					<input type="hidden" th:field="*{codigo}"/>
+					
 					<div class="form-group  bw-required" brewer:classforerror="nome">
 						<label for="nome" class="control-label">Nome</label>
 						<input id="nome" type="text" class="form-control" th:field="*{nome}"/>

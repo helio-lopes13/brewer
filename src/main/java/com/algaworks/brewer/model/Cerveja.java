@@ -14,6 +14,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.validation.constraints.DecimalMax;
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.Max;
@@ -79,6 +80,9 @@ public class Cerveja {
 	
 	@Column(name = "content_type")
 	private String contentType;
+	
+	@Transient
+	private boolean novaFoto;
 	
 	@PrePersist @PreUpdate
 	private void prePersistUpdate() {
@@ -176,10 +180,6 @@ public class Cerveja {
 	public String getFoto() {
 		return foto;
 	}
-	
-	public String getFotoOuMock() {
-		return !StringUtils.isEmpty(foto) ? foto : "cerveja-mock.png";
-	}
 
 	public void setFoto(String foto) {
 		this.foto = foto;
@@ -191,6 +191,26 @@ public class Cerveja {
 
 	public void setContentType(String contentType) {
 		this.contentType = contentType;
+	}
+	
+	public boolean isNovaFoto() {
+		return novaFoto;
+	}
+
+	public void setNovaFoto(boolean novaFoto) {
+		this.novaFoto = novaFoto;
+	}
+
+	public String getFotoOuMock() {
+		return !StringUtils.isEmpty(foto) ? foto : "cerveja-mock.png";
+	}
+	
+	public boolean temFoto() {
+		return !StringUtils.isEmpty(this.foto);
+	}
+	
+	public boolean isNova() {
+		return codigo == null;
 	}
 
 	@Override

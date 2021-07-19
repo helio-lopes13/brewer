@@ -1,26 +1,36 @@
 package com.algaworks.brewer.controller;
 
-import java.util.Arrays;
-
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.algaworks.brewer.controller.page.PageWrapper;
 import com.algaworks.brewer.model.Usuario;
 import com.algaworks.brewer.repository.Grupos;
 import com.algaworks.brewer.repository.Usuarios;
 import com.algaworks.brewer.repository.filter.UsuarioFilter;
 import com.algaworks.brewer.service.CadastroUsuarioService;
+import com.algaworks.brewer.service.StatusUsuario;
 import com.algaworks.brewer.service.exception.EmailUsuarioJaCadastradoException;
+import com.algaworks.brewer.service.exception.ImpossivelExcluirEntidadeException;
 import com.algaworks.brewer.service.exception.SenhaObrigatoriaUsuarioException;
 
 @Controller
@@ -43,7 +53,7 @@ public class UsuariosController {
 		return mv;
 	}
 
-	@PostMapping("/novo")
+	@PostMapping({"/novo", "{\\d+}"})
 	public ModelAndView salvar(@Valid Usuario usuario, BindingResult result, RedirectAttributes attributes) {
 		if (result.hasErrors()) {
 			return novo(usuario);
@@ -64,22 +74,40 @@ public class UsuariosController {
 	}
 	
 	@GetMapping
-//	public ModelAndView pesquisar(UsuarioFilter usuarioFilter, BindingResult result,
-//			@PageableDefault(size = 5) Pageable pageable, HttpServletRequest httpServletRequest) {
-	public ModelAndView pesquisar(UsuarioFilter usuarioFilter) {
+	public ModelAndView pesquisar(UsuarioFilter usuarioFilter, BindingResult result,
+			@PageableDefault(size = 3) Pageable pageable, HttpServletRequest httpServletRequest) {
 		ModelAndView mv = new ModelAndView("usuario/PesquisaUsuarios");
 		
-//		PageWrapper<Usuario> paginaWrapper = new PageWrapper<>(usuarios.filtrar(usuarioFilter, pageable),
-//				httpServletRequest);
+		PageWrapper<Usuario> paginaWrapper = new PageWrapper<>(usuarios.filtrar(usuarioFilter, pageable),
+				httpServletRequest);
 		
 		mv.addObject("grupos", grupos.findAll());
-		mv.addObject("usuarios", usuarios.filtrar(usuarioFilter));
-//		mv.addObject("pagina", paginaWrapper);
+		mv.addObject("pagina", paginaWrapper);
+		return mv;
+	}
+	
+	@GetMapping("/{codigo}")
+	public ModelAndView editar(@PathVariable Long codigo) {
+		Usuario usuario = usuarios.buscarComGrupos(codigo);
+		ModelAndView mv = novo(usuario);
+		mv.addObject(usuario);
 		return mv;
 	}
 	
 	@PutMapping("/status")
-	public void atualizarStatus(@RequestParam("codigos[]") Long[] codigos) {
-		Arrays.asList(codigos).forEach(System.out::println);
+	@ResponseStatus(HttpStatus.OK)
+	public void atualizarStatus(@RequestParam("codigos[]") Long[] codigos, @RequestParam("status") StatusUsuario statusUsuario) {
+		cadastroUsuarioService.alterarStatus(codigos, statusUsuario);
+	}
+	
+	@DeleteMapping("/{codigo}")
+	public @ResponseBody ResponseEntity<?> excluir(Usuario usuario) {
+		try {
+			cadastroUsuarioService.excluir(usuario);
+		} catch (ImpossivelExcluirEntidadeException e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
+		
+		return ResponseEntity.ok().build();
 	}
 }

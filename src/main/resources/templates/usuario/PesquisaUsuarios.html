@@ -2,8 +2,9 @@
 <html lang="pt" xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:th="http://www.thymeleaf.org"
 	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-	layout:decorate="~{layout/LayoutPadrao}"
-	xmlns:brewer="http://brewer.algaworks.com">
+	xmlns:data="http://www.thymeleaf.org/extras/data"
+	xmlns:brewer="http://brewer.algaworks.com"
+	layout:decorate="~{layout/LayoutPadrao}">
 	
 	<head>
 		<title>Pesquisa de usuários</title>
@@ -61,11 +62,11 @@
 				</form>
 				
 				<div class="aw-datatable-toolbar">
-					<button class="btn  btn-default  btn-xs">
+					<button class="btn  btn-default  btn-xs  js-status-btn  disabled" data:status="ATIVAR" data:url="@{/usuarios/status}">
 						<span>Ativar</span>
 					</button>
 					
-					<button class="btn  btn-default  btn-xs">
+					<button class="btn  btn-default  btn-xs  js-status-btn  disabled" data:status="DESATIVAR" data:url="@{/usuarios/status}">
 						<span>Desativar</span>
 					</button>
 				</div>
@@ -76,7 +77,7 @@
 							<tr>
 								<th class="table-usuarios-col-status">
 									<div class="checkbox  aw-checkbox-no-margin">
-										<input type="checkbox" />
+										<input type="checkbox" class="js-selecao-todos" />
 										<label></label>
 									</div>
 								</th>
@@ -89,11 +90,10 @@
 						</thead>
 						
 						<tbody>
-<!-- 							<tr th:each="usuario : ${pagina.conteudo}"> -->
-							<tr th:each="usuario : ${usuarios}">
+							<tr th:each="usuario : ${pagina.conteudo}">
 								<td>
-									<div class="checkbox  aw-checkbox-no-margin">
-										<input type="checkbox" />
+									<div class="checkbox  aw-checkbox-no-margin"  th:if="${#authentication.principal.usuario.codigo != usuario.codigo}">
+										<input type="checkbox" class="js-selecao" data:codigo="${usuario.codigo}" />
 										<label></label>
 									</div>
 								</td>
@@ -102,26 +102,40 @@
 								<td>
 									<span th:each="grupo : ${usuario.grupos}" th:text="|${grupo.nome}${grupoStat.last ? '' : ', '}|"></span>
 								</td>
-								<td th:text="${usuario.ativo} ? 'Ativo' : 'Inativo'">Ativo</td>
+								<td>
+									<th:block th:if="${usuario.ativo}">
+										<span class="label  label-success">Ativo</span>
+									</th:block>
+									<th:block th:if="${not usuario.ativo}">
+										<span class="label  label-danger">Inativo</span>
+									</th:block>
+									
+								</td>
 								<td class="text-center">
-									<a class="btn  btn-link  btn-xs  js-tooltip" title="Editar">
+									<a class="btn  btn-link  btn-xs  js-tooltip" title="Editar"
+										th:href="@{/usuarios/{codigo}(codigo=${usuario.codigo})}">
 										<i class="glyphicon  glyphicon-pencil"></i>
 									</a>
-									<a class="btn  btn-link  btn-xs  js-tooltip" title="Excluir">
+									<a class="btn  btn-link  btn-xs  js-tooltip  js-exclusao-btn" title="Excluir"
+										th:unless="${#authentication.principal.usuario.codigo == usuario.codigo}"
+										data:url="@{/usuarios/{codigo}(codigo=${usuario.codigo})}" data:objeto="${usuario.nome}">
 										<i class="glyphicon  glyphicon-remove"></i>
 									</a>
 								</td>
 							</tr>
-<!-- 							<tr th:if="${pagina.vazia}"> -->
-							<tr th:if="${usuarios.empty}">
-								<td colspan="4">Nenhum usuário encontrado</td>
+							<tr th:if="${pagina.vazia}">
+								<td colspan="6">Nenhum usuário encontrado</td>
 							</tr>
 						</tbody>
 					</table>
 				</div>
 				
-<!-- 				<brewer:pagination page="${pagina}" /> -->
+				<brewer:pagination page="${pagina}" />
 			</div>
 		</section>
+		
+		<th:block layout:fragment="javascript-extra">
+			<script th:src="@{/javascripts/multiselecao.js}"></script>
+		</th:block>
 	</body>
 </html>

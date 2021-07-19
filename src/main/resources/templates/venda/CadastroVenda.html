@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="pt" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:data="http://www.thymeleaf.org/extras/data"
+	xmlns:brewer="http://brewer.algaworks.com"
+	layout:decorate="~{layout/LayoutPadrao}">
+	
+	<head>
+		<title>Cadastro de venda</title>
+		
+		<link rel="stylesheet" th:href="@{/stylesheets/vendors/easy-autocomplete.min.css}"/>
+		<link rel="stylesheet" th:href="@{/stylesheets/vendors/easy-autocomplete.themes.min.css}"/>
+	</head>
+
+	<body>
+		<section layout:fragment="conteudo">
+			<div class="page-header">
+				<div class="container-fluid">
+					<div class="row">
+						<div class="col-xs-10">
+							<h1 th:if="${venda.nova}" th:text="#{venda.cadastro.titulo}">Cadastro de venda</h1>
+							<h1 th:unless="${venda.nova}">Edição da venda n° [[${venda.codigo}]]</h1>
+						</div>
+						
+						<div class="col-xs-2">
+							<div class="aw-page-header-controls">
+								<a class="btn  btn-default" th:href="@{/vendas}">
+									<i class="glyphicon  glyphicon-search"></i> <span class="hidden-xs  hidden-sm">Pesquisa</span>
+								</a>
+							</div>	
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="container-fluid">
+				<form method="POST" th:action="@{/vendas/nova}" th:object="${venda}" class="js-formulario-principal">
+					<brewer:message />
+					
+					<input type="hidden" id="uuid" th:field="*{uuid}"/>
+					<input type="hidden" th:field="*{codigo}"/>
+					<input type="hidden" th:field="*{usuario}"/>
+					
+					<div class="row">
+						<div class="col-sm-4">
+							<div class="aw-box  js-valor-total-box-container">
+								<div class="aw-box__icon">
+									<i class="fa  fa-usd  fa-3x"></i>
+								</div>
+								<div class="aw-box__value">R$<span class="js-valor-total-box" th:text="${{venda.valorTotal}}">0,00</span></div>
+								<div class="aw-box__title">Total</div>
+							</div>
+						</div>
+						
+						<div class="col-sm-4">
+							<div class="aw-box">
+								<div class="aw-box__icon">
+									<i class="fa  fa-tag  fa-3x"></i>
+								</div>
+								<div class="aw-box__value" th:text="${venda.status.descricao}">Orçamento</div>
+								<div class="aw-box__title">Status</div>
+							</div>
+						</div>
+						
+						<div class="col-sm-4">
+							<div class="aw-box">
+								<div class="aw-box__icon">
+									<i class="fa  fa-calendar  fa-3x"></i>
+								</div>
+								<div class="aw-box__value">
+									<span class="js-tooltip" th:if="${venda.diasCriacao == 0}">Hoje</span>
+									<span class="js-tooltip" th:if="${venda.diasCriacao == 1}">Há 1 dia</span>
+									<span class="js-tooltip" th:if="${venda.diasCriacao > 1}">Há [[${venda.diasCriacao}]] dias</span>
+								</div>
+								<div class="aw-box__title">Criação</div>
+							</div>
+						</div>
+					</div>
+					
+					<div class="row">
+						<div class="col-sm-4  form-group  bw-required" brewer:classforerror="cliente.codigo">
+							<label for="nomeCliente" class="control-label">Cliente</label>
+							<div class="input-group">
+								<input id="nomeCliente" class="form-control" type="text" th:field="*{cliente.nome}"
+									readonly="readonly" placeholder="Clique na lupa para pesquisar o cliente" />
+								<input id="codigoCliente" type="hidden" th:field="*{cliente}" />
+								<span class="input-group-btn">
+									<button class="btn  btn-default  js-tooltip" type="button" title="Pesquisa avançada"
+										data-toggle="modal" data-target="#pesquisaRapidaClientes" th:disabled="${venda.salvarProibido}">
+										<i class="glyphicon  glyphicon-search"></i>
+									</button>
+								</span>
+							</div>
+						</div>
+						
+						<div class="col-sm-4  form-group">
+							<label for="valorFrete" class="control-label">Valor do frete</label>
+							<div class="input-group">
+								<div class="input-group-addon">R$</div>
+								<input id="valorFrete" th:field="*{valorFrete}" data:valor="${valorFrete}"
+									class="form-control  js-decimal" th:disabled="${venda.salvarProibido}"
+									type="text" maxlength="14" />
+							</div>
+						</div>
+						
+						<div class="col-sm-4  form-group">
+							<label for="valorDesconto" class="control-label">Valor do desconto</label>
+							<div class="input-group">
+								<div class="input-group-addon">R$</div>
+								<input id="valorDesconto" th:field="*{valorDesconto}" data:valor="${valorDesconto}"
+									class="form-control  js-decimal" th:disabled="${venda.salvarProibido}"
+									type="text" maxlength="14" />
+							</div>
+						</div>
+						
+					</div>
+					
+					<div class="row">
+						<div class="col-lg-12  form-group">
+							<ul class="nav  nav-tabs  js-abas-venda">
+								<li role="presentation" class="active">
+									<a href="#cervejas">Cervejas</a>
+								</li>
+								
+								<li role="presentation">
+									<a href="#entrega">Entrega</a>
+								</li>
+							</ul>
+						</div>
+					</div>
+					
+					<div class="tab-content">
+						<div id="cervejas" class="tab-pane  active">
+							<div class="row">
+								<div class="col-lg-12  form-group">
+									<input id="cerveja" class="form-control  js-sku-nome-cerveja-input" type="text"
+										placeholder="Pesquise e adicione a cerveja pelo SKU ou nome" autofocus="autofocus"
+										data:url="@{/cervejas}" th:disabled="${venda.salvarProibido}"/>
+								</div>
+							</div>
+							
+							<div class="bw-tabela-cervejas  js-tabela-cervejas-container" data:valor="${valorTotalItens}">
+								<th:block th:replace="venda/TabelaItensVenda" />
+							</div>
+						</div>
+						
+						<div id="entrega" class="tab-pane">
+							<div class="row">
+								<div class="col-sm-3  form-group"  brewer:classforerror="dataEntrega">
+									<label for="dataEntrega" class="control-label">Data da entrega</label>
+									<input id="dataEntrega" class="form-control" type="text"
+										th:field="*{dataEntrega}" th:disabled="${venda.salvarProibido}"/>
+								</div>
+								
+								<div class="col-sm-3  form-group">
+									<label for="horarioEntrega" class="control-label">Horário da entrega</label>
+									<input id="horarioEntrega" class="form-control" type="text"
+										th:field="*{horarioEntrega}" th:disabled="${venda.salvarProibido}"/>
+								</div>
+							</div>
+							
+							<div class="row">
+								<div class="col-sm-12  form-group">
+									<textarea id="observacao" class="form-control" rows="5" th:field="*{observacao}"
+										placeholder="Alguma observação para o entregador desse pedido?"
+										th:disabled="${venda.salvarProibido}"></textarea>
+								</div>
+							</div>
+						</div>
+					</div>
+					
+					<div class="row" style="clear: both" th:if="${venda.salvarPermitido}">
+						<div class="col-lg-12">
+							<div class="btn-group">
+								<button class="btn  btn-primary  js-submit-btn" type="submit" data:acao="salvar">Salvar</button>
+								<button class="btn  btn-primary  dropdown-toggle" type="button" data-toggle="dropdown">
+									<span class="caret"></span>
+								</button>
+								
+								<ul class="dropdown-menu">
+									<li>
+										<a href="#" class="js-submit-btn" data:acao="emitir">Salvar e emitir</a>
+									</li>
+									<li>
+										<a href="#" class="js-submit-btn" data:acao="enviarEmail">Salvar e enviar por e-mail</a>
+									</li>
+								</ul>
+							</div>
+							
+							<button class="btn  btn-danger  js-submit-btn" data:acao="cancelar" th:unless="${venda.nova}">Cancelar</button>
+						</div>
+					</div>
+				</form>
+			</div>
+			
+			<th:block th:replace="cliente/PesquisaRapidaClientes :: pesquisaRapidaClientes"></th:block>
+			<th:block th:replace="hbs/TemplateAutocompleteCerveja"></th:block>
+		</section>
+		
+		<th:block layout:fragment="javascript-extra">
+			<script th:src="@{/javascripts/vendors/jquery.easy-autocomplete.min.js}"></script>
+			<script th:src="@{/javascripts/vendors/handlebars.min.js}"></script>
+			<script th:src="@{/javascripts/cliente.pesquisa-rapida.js}"></script>
+			<script th:src="@{/javascripts/venda.autocomplete-itens.js}"></script>
+			<script th:src="@{/javascripts/venda.tabela-itens.js}"></script>
+			<script th:src="@{/javascripts/venda.js}"></script>
+			<script th:src="@{/javascripts/venda.botoes-submit.js}"></script>
+			<script>
+				$(function() {
+					$('.js-abas-venda a').click(function (e) {
+						e.preventDefault();
+						$(this).tab('show');
+					});
+				});
+			</script>
+		</th:block>
+	</body>
+</html>

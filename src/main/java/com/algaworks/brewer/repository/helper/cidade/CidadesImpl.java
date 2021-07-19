@@ -27,6 +27,17 @@ public class CidadesImpl implements CidadesQueries {
 
 	@Autowired
 	private PaginacaoUtil paginacaoUtil;
+	
+	@Override
+	@Transactional(readOnly = true)
+	public Cidade buscarComEstado(Long codigo) {
+		Criteria criteria = manager.unwrap(Session.class).createCriteria(Cidade.class);
+		criteria.createAlias("estado", "e", JoinType.LEFT_OUTER_JOIN);
+		criteria.add(Restrictions.eq("codigo", codigo));
+		criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
+		
+		return (Cidade) criteria.uniqueResult();
+	}
 
 	@SuppressWarnings("unchecked")
 	@Override

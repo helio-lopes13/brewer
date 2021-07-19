@@ -7,7 +7,6 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Order;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.springframework.web.util.UriComponentsBuilder;
 
 public class PageWrapper<T> {
@@ -17,27 +16,22 @@ public class PageWrapper<T> {
 	
 	public PageWrapper(Page<T> page, HttpServletRequest httpServletRequest) {
 		this.page = page;
-//		this.uriBuilder = ServletUriComponentsBuilder.fromRequest(httpServletRequest);
 		String httpUrl = httpServletRequest.getRequestURL().append(
 				httpServletRequest.getQueryString() != null ? "?" + httpServletRequest.getQueryString() : "")
-				.toString().replaceAll("\\+", "%20");
-		this.uriBuilder = ServletUriComponentsBuilder.fromHttpUrl(httpUrl);
+				.toString().replaceAll("\\+", "%20").replaceAll("excluido", "");
+		this.uriBuilder = UriComponentsBuilder.fromHttpUrl(httpUrl);
 	}
 	
 	public List<T> getConteudo() {
 		return page.getContent();
 	}
 	
-	public int getTotal() {
-		return page.getTotalPages();
+	public boolean isVazia() {
+		return page.getContent().isEmpty();
 	}
 	
 	public int getAtual() {
 		return page.getNumber();
-	}
-	
-	public boolean isVazia() {
-		return page.getContent().isEmpty();
 	}
 	
 	public boolean isPrimeira() {
@@ -48,18 +42,8 @@ public class PageWrapper<T> {
 		return page.isLast();
 	}
 	
-	public boolean descendente(String propriedade) {
-		return inverterDirecao(propriedade).equals("asc");
-	}
-	
-	public boolean ordenada(String propriedade) {
-		Order order = page.getSort() != null ? page.getSort().getOrderFor(propriedade) : null;
-		
-		if (order == null) {
-			return false;
-		}
-		
-		return page.getSort().getOrderFor(propriedade) != null;
+	public int getTotal() {
+		return page.getTotalPages();
 	}
 	
 	public String urlParaPagina(int pagina) {
@@ -83,6 +67,20 @@ public class PageWrapper<T> {
 		}
 		
 		return direcao;
+	}
+	
+	public boolean descendente(String propriedade) {
+		return inverterDirecao(propriedade).equals("asc");
+	}
+	
+	public boolean ordenada(String propriedade) {
+		Order order = page.getSort() != null ? page.getSort().getOrderFor(propriedade) : null;
+		
+		if (order == null) {
+			return false;
+		}
+		
+		return page.getSort().getOrderFor(propriedade) != null ? true : false;
 	}
 
 }

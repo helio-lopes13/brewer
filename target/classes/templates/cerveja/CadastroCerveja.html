@@ -6,7 +6,8 @@
 	xmlns:brewer="http://brewer.algaworks.com">
 	
 	<head>
-		<title>Cadastro de cerveja</title>
+		<title th:text="${cerveja.nova} ? 'Cadastro de cerveja' : 'Edição de cerveja'">Cadastro de cerveja</title>
+		
 		
 		<link rel="stylesheet" th:href="@{/stylesheets/vendors/upload.min.css}"/>
 	</head>
@@ -17,7 +18,8 @@
 				<div class="container-fluid">
 					<div class="row">
 						<div class="col-xs-10">
-							<h1>Cadastro de cerveja</h1>
+							<h1 th:if="${cerveja.nova}">Cadastro de cerveja</h1>
+							<h1 th:unless="${cerveja.nova}" th:text="|Edição da ${cerveja.nome}|">Edição de cerveja</h1>
 						</div>
 						
 						<div class="col-xs-2">
@@ -32,8 +34,11 @@
 			</div>
 
 			<div class="container-fluid">
-				<form method="POST" th:object="${cerveja}" th:action="@{/cervejas/novo}">
+				<form method="POST" th:object="${cerveja}"
+					th:action="${cerveja.nova} ? @{/cervejas/nova} : @{/cervejas/{codigo}(codigo=${cerveja.codigo})}">
 					<brewer:message />
+					
+					<input type="hidden" th:field="*{codigo}"/>
 
 					<div class="row">
 						<div class="col-sm-2  form-group  bw-required" brewer:classforerror="sku">
@@ -124,6 +129,7 @@
 						<div class="col-sm-12  form-group">
 							<input type="hidden" th:field="*{foto}"/>
 							<input type="hidden" th:field="*{contentType}"/>
+							<input type="hidden" th:field="*{novaFoto}"/>
 							
 							<label class="control-label">Foto</label>
 							

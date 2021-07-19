@@ -2,8 +2,9 @@
 <html lang="pt" xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:th="http://www.thymeleaf.org"
 	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-	layout:decorate="~{layout/LayoutPadrao}"
-	xmlns:brewer="http://brewer.algaworks.com">
+	xmlns:brewer="http://brewer.algaworks.com"
+	xmlns:data="http://www.thymeleaf.org/extras/data"
+	layout:decorate="~{layout/LayoutPadrao}">
 	
 	<head>
 		<title>Pesquisa de clientes</title>
@@ -71,10 +72,12 @@
 								<td th:text="${cliente.telefone}" class="text-right">(85) 3467-8873</td>
 								<td th:text="${cliente.endereco.nomeCidadeSiglaEstado}" class="text-right">Maringá/SC</td>
 								<td class="text-center">
-									<a class="btn  btn-link  btn-xs  js-tooltip" title="Editar">
+									<a class="btn  btn-link  btn-xs  js-tooltip" title="Editar"
+										th:href="@{/clientes/{codigo}(codigo=${cliente.codigo})}">
 										<i class="glyphicon  glyphicon-pencil"></i>
 									</a>
-									<a class="btn  btn-link  btn-xs  js-tooltip" title="Excluir">
+									<a class="btn  btn-link  btn-xs  js-tooltip  js-exclusao-btn" title="Excluir"
+										data:url="@{/clientes/{codigo}(codigo=${cliente.codigo})}" data:objeto="${cliente.nome}">
 										<i class="glyphicon  glyphicon-remove"></i>
 									</a>
 								</td>

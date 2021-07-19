@@ -18,7 +18,6 @@ public class PaginacaoUtil {
 		criteria.setMaxResults(totalRegistrosPorPagina);
 		
 		Sort sort = pageable.getSort();
-		
 		if(sort != null) {
 			Sort.Order order = sort.iterator().next();
 			String property = order.getProperty();
