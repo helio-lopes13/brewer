@@ -6,7 +6,7 @@
 	xmlns:brewer="http://brewer.algaworks.com">
 	
 	<head>
-		<title th:text="${cerveja.nova} ? 'Cadastro de cerveja' : 'Edição de cerveja'">Cadastro de cerveja</title>
+		<title th:text="${cerveja.nova} ? #{cerveja.cadastro.titulo} : #{cerveja.edicao.titulo(${cerveja.nome})}">Cadastro de cerveja</title>
 		
 		
 		<link rel="stylesheet" th:href="@{/stylesheets/vendors/upload.min.css}"/>
@@ -18,8 +18,8 @@
 				<div class="container-fluid">
 					<div class="row">
 						<div class="col-xs-10">
-							<h1 th:if="${cerveja.nova}">Cadastro de cerveja</h1>
-							<h1 th:unless="${cerveja.nova}" th:text="|Edição da ${cerveja.nome}|">Edição de cerveja</h1>
+							<h1 th:if="${cerveja.nova}" th:text="#{cerveja.cadastro.titulo}">Cadastro de cerveja</h1>
+							<h1 th:unless="${cerveja.nova}" th:text="#{cerveja.edicao.titulo(${cerveja.nome})}">Edição de cerveja</h1>
 						</div>
 						
 						<div class="col-xs-2">
@@ -130,6 +130,7 @@
 							<input type="hidden" th:field="*{foto}"/>
 							<input type="hidden" th:field="*{contentType}"/>
 							<input type="hidden" th:field="*{novaFoto}"/>
+							<input type="hidden" th:field="*{urlFoto}"/>
 							
 							<label class="control-label">Foto</label>
 							

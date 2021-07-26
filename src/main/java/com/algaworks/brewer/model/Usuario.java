@@ -23,7 +23,7 @@ import org.hibernate.validator.constraints.NotBlank;
 
 import com.algaworks.brewer.validation.AtributoConfirmacao;
 
-@AtributoConfirmacao(message = "Senhas não conferem", atributo = "senha", atributoConfirmacao = "confirmacaoSenha")
+@AtributoConfirmacao(message = "{com.algaworks.brewer.constraints.AtributoConfirmacao.message}", atributo = "senha", atributoConfirmacao = "confirmacaoSenha")
 @Entity
 @Table(name = "usuario")
 @DynamicUpdate

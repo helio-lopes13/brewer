@@ -6,7 +6,7 @@
 	layout:decorate="~{layout/LayoutPadrao}">
 	
 	<head>
-		<title>Cadastro de cidade</title>
+		<title th:text="${cidade.nova} ? #{cidade.cadastro.titulo} : #{cidade.edicao.titulo(${cidade.nome})}">Cadastro de cidade</title>
 	</head>
 
 	<body>
@@ -15,8 +15,8 @@
 				<div class="container-fluid">
 					<div class="row">
 						<div class="col-xs-10">
-							<h1 th:if="${cidade.nova}">Cadastro de cidade</h1>
-							<h1 th:unless="${cidade.nova}" th:text="|Edição de ${cidade.nome}|">Edição de cidade</h1>
+							<h1 th:if="${cidade.nova}" th:text="#{cidade.cadastro.titulo}">Cadastro de cidade</h1>
+							<h1 th:unless="${cidade.nova}" th:text="#{cidade.edicao.titulo(${cidade.nome})}">Edição de cidade</h1>
 						</div>
 						
 						<div class="col-xs-2">

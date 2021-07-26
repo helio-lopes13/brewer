@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
@@ -24,8 +25,10 @@ import javax.validation.constraints.Size;
 import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.util.StringUtils;
 
+import com.algaworks.brewer.repository.listener.CervejaEntityListener;
 import com.algaworks.brewer.validation.SKU;
 
+@EntityListeners(CervejaEntityListener.class)
 @Entity
 @Table(name = "cerveja")
 public class Cerveja {
@@ -34,44 +37,44 @@ public class Cerveja {
 	private Long codigo;
 	
 	@SKU
-	@NotBlank(message = "O SKU é obrigatório")
+	@NotBlank
 	private String sku;
 	
-	@NotBlank(message = "O nome é obrigatório")
+	@NotBlank
 	private String nome;
 
-	@NotBlank(message = "A descrição é obrigatória")
+	@NotBlank
 	@Size(message = "A descrição deve ter tamanho entre 1 e 50", max = 50)
 	private String descricao;
 	
 	@DecimalMin(value = "0.50", message = "O valor deve ser maior que R$ 0,50")
 	@DecimalMax(value = "9999999.99", message = "O valor deve ser menor que R$ 9.999.999,99")
-	@NotNull(message = "O valor é obrigatório")
+	@NotNull
 	private BigDecimal valor;
 	
-	@NotNull(message = "O teor alcoólico é obrigatório")
+	@NotNull
 	@DecimalMax(value = "100.0", message = "O teor alcoólico deve ser menor que 100%")
 	@Column(name = "teor_alcoolico")
 	private BigDecimal teorAlcoolico;
 	
-	@NotNull(message = "A comissão é obrigatória")
+	@NotNull
 	@DecimalMax(value = "100.0", message = "A comissão deve ser menor ou igual a 100%")
 	private BigDecimal comissao;
 	
-	@NotNull(message = "A quantidade em estoque é obrigatória")
+	@NotNull
 	@Max(value = 9999, message = "A quantidade de cervejas no estoque deve ser menor ou igual a 9.999")
 	@Column(name = "quantidade_estoque")
 	private Integer quantidadeEstoque;
 	
-	@NotNull(message = "A origem é obrigatória")
+	@NotNull
 	@Enumerated(EnumType.STRING)
 	private Origem origem;
 	
-	@NotNull(message = "O sabor é obrigatório")
+	@NotNull
 	@Enumerated(EnumType.STRING)
 	private Sabor sabor;
 	
-	@NotNull(message = "O estilo é obrigatório")
+	@NotNull
 	@ManyToOne
 	@JoinColumn(name = "codigo_estilo")
 	private Estilo estilo;
@@ -83,6 +86,12 @@ public class Cerveja {
 	
 	@Transient
 	private boolean novaFoto;
+	
+	@Transient
+	private String urlFoto;
+	
+	@Transient
+	private String urlThumbnailFoto;
 	
 	@PrePersist @PreUpdate
 	private void prePersistUpdate() {
@@ -199,6 +208,22 @@ public class Cerveja {
 
 	public void setNovaFoto(boolean novaFoto) {
 		this.novaFoto = novaFoto;
+	}
+
+	public String getUrlFoto() {
+		return urlFoto;
+	}
+
+	public void setUrlFoto(String urlFoto) {
+		this.urlFoto = urlFoto;
+	}
+
+	public String getUrlThumbnailFoto() {
+		return urlThumbnailFoto;
+	}
+
+	public void setUrlThumbnailFoto(String urlThumbnailFoto) {
+		this.urlThumbnailFoto = urlThumbnailFoto;
 	}
 
 	public String getFotoOuMock() {

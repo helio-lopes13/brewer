@@ -6,7 +6,7 @@
 	layout:decorate="~{layout/LayoutPadrao}">
 	
 	<head>
-		<title>Cadastro de usuário</title>
+		<title th:text="${usuario.novo} ? #{usuario.cadastro.titulo} : #{usuario.edicao.titulo(${usuario.nome})}">Cadastro de usuário</title>
 		<link rel="stylesheet" type="text/css"
 		th:href="@{/stylesheets/vendors/bootstrap-switch.min.css}" />
 	</head>
@@ -17,8 +17,8 @@
 				<div class="container-fluid">
 					<div class="row">
 						<div class="col-xs-10">
-							<h1 th:if="${usuario.novo}">Cadastro de usuário</h1>
-							<h1 th:unless="${usuario.novo}">Edição de usuário - [[${usuario.nome}]]</h1>
+							<h1 th:if="${usuario.novo}" th:text="#{usuario.cadastro.titulo}">Cadastro de usuário</h1>
+							<h1 th:unless="${usuario.novo}" th:text="#{usuario.edicao.titulo(${usuario.nome})}"></h1>
 						</div>
 						
 						<div class="col-xs-2">

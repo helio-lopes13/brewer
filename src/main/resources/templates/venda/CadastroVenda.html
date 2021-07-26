@@ -7,7 +7,7 @@
 	layout:decorate="~{layout/LayoutPadrao}">
 	
 	<head>
-		<title>Cadastro de venda</title>
+		<title th:text="#{venda.cadastro.titulo}">Cadastro de venda</title>
 		
 		<link rel="stylesheet" th:href="@{/stylesheets/vendors/easy-autocomplete.min.css}"/>
 		<link rel="stylesheet" th:href="@{/stylesheets/vendors/easy-autocomplete.themes.min.css}"/>
@@ -20,7 +20,7 @@
 					<div class="row">
 						<div class="col-xs-10">
 							<h1 th:if="${venda.nova}" th:text="#{venda.cadastro.titulo}">Cadastro de venda</h1>
-							<h1 th:unless="${venda.nova}">Edição da venda n° [[${venda.codigo}]]</h1>
+							<h1 th:unless="${venda.nova}" th:text="#{venda.edicao.titulo(${venda.codigo})}"></h1>
 						</div>
 						
 						<div class="col-xs-2">

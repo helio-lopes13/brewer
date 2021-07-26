@@ -8,7 +8,7 @@
 	layout:decorate="~{layout/LayoutPadrao}">
 	
 	<head>
-		<title>Pesquisa de cidades</title>
+		<title th:text="#{cidade.pesquisa.titulo}">Pesquisa de cidades</title>
 	</head>
 	
 	<body>
@@ -17,7 +17,7 @@
 				<div class="container-fluid">
 					<div class="row">
 						<div class="col-xs-10">
-							<h1>Pesquisa de cidades</h1>
+							<h1 th:text="#{cidade.pesquisa.titulo}">Pesquisa de cidades</h1>
 						</div>
 						
 						<div class="col-xs-2" sec:authorize-url="/cidades/nova">

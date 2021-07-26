@@ -7,7 +7,7 @@
 	layout:decorate="~{layout/LayoutPadrao}">
 	
 	<head>
-		<title>Cadastro de estilo</title>
+		<title th:text="${estilo.novo} ? #{estilo.cadastro.titulo} : #{estilo.edicao.titulo(${estilo.nome})}">Cadastro de estilo</title>
 	</head>
 
 	<body>
@@ -16,8 +16,8 @@
 				<div class="container-fluid">
 					<div class="row">
 						<div class="col-xs-10">
-							<h1 th:if="${estilo.novo}">Cadastro de estilo</h1>
-							<h1 th:unless="${estilo.novo}">Edição de [[${estilo.nome}]]</h1>
+							<h1 th:if="${estilo.novo}" th:text="#{estilo.cadastro.titulo}">Cadastro de estilo</h1>
+							<h1 th:unless="${estilo.novo}" th:text="#{estilo.edicao.titulo(${estilo.nome})}"></h1>
 						</div>
 						
 						<div class="col-xs-2">

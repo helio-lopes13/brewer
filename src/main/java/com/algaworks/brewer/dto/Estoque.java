@@ -18,7 +18,7 @@ public class Estoque {
 	}
 
 	public Long getTotalItens() {
-		return totalItens;
+		return totalItens != null ? totalItens : 0L;
 	}
 
 	public void setTotalItens(Long totalItens) {
@@ -26,7 +26,7 @@ public class Estoque {
 	}
 
 	public BigDecimal getValor() {
-		return valor;
+		return valor != null ? valor : BigDecimal.ZERO;
 	}
 
 	public void setValor(BigDecimal valor) {

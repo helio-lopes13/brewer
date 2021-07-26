@@ -25,10 +25,10 @@ public class Cidade implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long codigo;
 
-	@NotBlank(message = "O nome é obrigatório")
+	@NotBlank
 	private String nome;
 
-	@NotNull(message = "O estado é obrigatório")
+	@NotNull
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "codigo_estado")
 	@JsonIgnore
